@@ -17,7 +17,7 @@ st.markdown("""
 <style>
     .stApp {
         background-color: #0f1117;
-        color: #e0e0e0;
+        color: #e6edf3;
     }
 
     [data-testid="stSidebar"] {
@@ -46,7 +46,6 @@ st.markdown("""
     .verdict-reject {
         background-color: #3d1c1c;
         border: 1px solid #f85149;
-        border-left: 4px solid #f85149;
         border-radius: 6px;
         padding: 16px 20px;
         font-size: 16px;
@@ -57,17 +56,12 @@ st.markdown("""
     .verdict-pass {
         background-color: #1c3d2a;
         border: 1px solid #3fb950;
-        border-left: 4px solid #3fb950;
         border-radius: 6px;
         padding: 16px 20px;
         font-size: 16px;
         font-weight: 600;
         color: #3fb950;
     }
-
-    #MainMenu { visibility: hidden; }
-    footer { visibility: hidden; }
-    header { visibility: hidden; }
 
     .stTabs [data-baseweb="tab"] {
         background-color: #161b22;
@@ -87,9 +81,8 @@ st.markdown("""
         color: #e6edf3;
     }
 
-    p, li {
-        color: #8b949e;
-    }
+    #MainMenu { visibility: hidden; }
+    footer { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
 
