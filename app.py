@@ -1,5 +1,4 @@
 import streamlit as st
-import cv2
 import numpy as np
 from PIL import Image
 from ultralytics import YOLO
@@ -166,8 +165,7 @@ with tab1:
                 elapsed = (time.time() - t0) * 1000
 
             result  = results[0]
-            ann_img = result.plot(line_width=2, font_size=12)
-            ann_rgb = cv2.cvtColor(ann_img, cv2.COLOR_BGR2RGB)
+            ann_rgb = result.plot(line_width=2, font_size=12)[:, :, ::-1]
             st.image(ann_rgb, caption="Detected Defects", use_container_width=True)
 
             boxes     = result.boxes
@@ -229,7 +227,7 @@ with tab2:
                 verbose=False
             )[0]
             n       = len(res.boxes)
-            ann     = cv2.cvtColor(res.plot(line_width=2), cv2.COLOR_BGR2RGB)
+            ann     = res.plot(line_width=2)[:, :, ::-1]
             verdict = "REJECT" if n > 0 else "PASS"
             color   = "#f85149" if n > 0 else "#3fb950"
 
@@ -284,14 +282,14 @@ with tab3:
         if os.path.exists("results.png"):
             st.image("results.png", use_container_width=True)
         else:
-            st.markdown('<p style="color:#8b949e;">results.png not found in repo root.</p>', unsafe_allow_html=True)
+            st.markdown('<p style="color:#8b949e;">results.png not found.</p>', unsafe_allow_html=True)
 
     with ic2:
         st.markdown('<div class="section-header">Confusion Matrix</div>', unsafe_allow_html=True)
         if os.path.exists("confusion_matrix.png"):
             st.image("confusion_matrix.png", use_container_width=True)
         else:
-            st.markdown('<p style="color:#8b949e;">confusion_matrix.png not found in repo root.</p>', unsafe_allow_html=True)
+            st.markdown('<p style="color:#8b949e;">confusion_matrix.png not found.</p>', unsafe_allow_html=True)
 
     st.markdown("---")
     st.markdown('<div class="section-header">Per-Class Performance</div>', unsafe_allow_html=True)
