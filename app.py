@@ -72,10 +72,12 @@ st.markdown("""
         border-radius: 6px 6px 0 0;
         font-weight: 500;
     }
+
     .stTabs [aria-selected="true"] {
-        background-color: #00b4d8;
-        color: #000000;
+        background-color: #1e3a4a;
+        color: #caf0f8;
         font-weight: 700;
+        border-bottom: 2px solid #00b4d8;
     }
 
     h1, h2, h3 { color: #e6edf3; }
