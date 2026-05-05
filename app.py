@@ -68,20 +68,59 @@ st.markdown("""
 
     .stTabs [data-baseweb="tab"] {
         background-color: #161b22;
-        color: #8b949e;
+        color: #aeb6bf;
         border-radius: 6px 6px 0 0;
         font-weight: 500;
     }
 
     .stTabs [aria-selected="true"] {
-        background-color: #1e3a4a;
-        color: #caf0f8;
+        background-color: #22303c;
+        color: #f8fafc;
         font-weight: 700;
-        border-bottom: 2px solid #00b4d8;
+        border-bottom: 2px solid #7dd3fc;
     }
 
     h1, h2, h3 { color: #e6edf3; }
-    p, li { color: #8b949e; }
+    p, li, label, span, div { color: inherit; }
+
+    /* Sidebar text */
+    [data-testid="stSidebar"] * {
+        color: #dbe4ee !important;
+    }
+
+    /* Selectbox */
+    [data-testid="stSidebar"] div[data-baseweb="select"] > div {
+        background-color: #0f1117 !important;
+        color: #f8fafc !important;
+        border: 1px solid #30363d !important;
+    }
+
+    [data-testid="stSidebar"] div[data-baseweb="select"] input {
+        color: #f8fafc !important;
+    }
+
+    [data-testid="stSidebar"] div[data-baseweb="popover"] ul {
+        background-color: #161b22 !important;
+        color: #f8fafc !important;
+    }
+
+    /* Slider labels and values */
+    [data-testid="stSidebar"] .stSlider label,
+    [data-testid="stSidebar"] .stSelectbox label,
+    [data-testid="stSidebar"] .stMarkdown,
+    [data-testid="stSidebar"] p {
+        color: #dbe4ee !important;
+    }
+
+    /* Slider track and thumb */
+    [data-testid="stSidebar"] div[data-baseweb="slider"] > div > div {
+        color: #7dd3fc !important;
+    }
+
+    [data-testid="stSidebar"] div[data-baseweb="slider"] [role="slider"] {
+        background-color: #7dd3fc !important;
+        box-shadow: 0 0 0 1px #7dd3fc !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -133,7 +172,6 @@ st.markdown("---")
 
 tab1, tab2, tab3 = st.tabs(["Single Image Inspection", "Batch Inspection", "Model Performance"])
 
-# ── TAB 1 ─────────────────────────────────────────────────────
 with tab1:
     col_upload, col_result = st.columns([1, 1], gap="large")
 
@@ -168,11 +206,11 @@ with tab1:
                 )
                 elapsed = (time.time() - t0) * 1000
 
-            result  = results[0]
+            result = results[0]
             ann_rgb = result.plot(line_width=2, font_size=12)[:, :, ::-1]
             st.image(ann_rgb, caption="Detected Defects", use_container_width=True)
 
-            boxes     = result.boxes
+            boxes = result.boxes
             n_defects = len(boxes)
             m1, m2, m3 = st.columns(3)
             m1.metric("Defects Found", n_defects)
@@ -188,7 +226,7 @@ with tab1:
                 st.markdown('<div class="section-header" style="margin-top:20px">Defect Breakdown</div>', unsafe_allow_html=True)
                 det_data = []
                 for i, box in enumerate(boxes):
-                    cls_id   = int(box.cls[0])
+                    cls_id = int(box.cls[0])
                     cls_name = CLASSES[cls_id]
                     conf_val = float(box.conf[0])
                     x1, y1, x2, y2 = map(int, box.xyxy[0])
@@ -205,7 +243,6 @@ with tab1:
                 unsafe_allow_html=True
             )
 
-# ── TAB 2 ─────────────────────────────────────────────────────
 with tab2:
     st.markdown('<div class="section-header">Batch Upload</div>', unsafe_allow_html=True)
     batch_files = st.file_uploader(
@@ -216,10 +253,10 @@ with tab2:
     )
 
     if batch_files:
-        model    = load_model()
+        model = load_model()
         progress = st.progress(0)
-        summary  = []
-        cols     = st.columns(3)
+        summary = []
+        cols = st.columns(3)
 
         for idx, f in enumerate(batch_files):
             img = Image.open(f).convert("RGB")
@@ -230,10 +267,10 @@ with tab2:
                 imgsz=imgsz,
                 verbose=False
             )[0]
-            n       = len(res.boxes)
-            ann     = res.plot(line_width=2)[:, :, ::-1]
+            n = len(res.boxes)
+            ann = res.plot(line_width=2)[:, :, ::-1]
             verdict = "REJECT" if n > 0 else "PASS"
-            color   = "#f85149" if n > 0 else "#3fb950"
+            color = "#f85149" if n > 0 else "#3fb950"
 
             with cols[idx % 3]:
                 st.image(ann, use_container_width=True)
@@ -254,11 +291,11 @@ with tab2:
         st.markdown("---")
         st.markdown('<div class="section-header">Batch Summary Report</div>', unsafe_allow_html=True)
 
-        total    = len(summary)
+        total = len(summary)
         rejected = sum(1 for s in summary if s["Verdict"] == "REJECT")
-        passed   = total - rejected
-        all_cls  = [c for s in summary for c in s["Classes Found"].split(", ") if c != "None"]
-        top_cls  = Counter(all_cls).most_common(1)[0][0] if all_cls else "None"
+        passed = total - rejected
+        all_cls = [c for s in summary for c in s["Classes Found"].split(", ") if c != "None"]
+        top_cls = Counter(all_cls).most_common(1)[0][0] if all_cls else "None"
 
         r1, r2, r3, r4 = st.columns(4)
         r1.metric("Total Inspected", total)
@@ -268,15 +305,14 @@ with tab2:
 
         st.dataframe(pd.DataFrame(summary), use_container_width=True, hide_index=True)
 
-# ── TAB 3 ─────────────────────────────────────────────────────
 with tab3:
     st.markdown('<div class="section-header">Training Results</div>', unsafe_allow_html=True)
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("mAP50",     "0.7948")
-    c2.metric("mAP50-95",  "0.4558")
+    c1.metric("mAP50", "0.7948")
+    c2.metric("mAP50-95", "0.4558")
     c3.metric("Precision", "0.7784")
-    c4.metric("Recall",    "0.7365")
+    c4.metric("Recall", "0.7365")
 
     st.markdown("---")
 
@@ -299,21 +335,21 @@ with tab3:
     st.markdown('<div class="section-header">Per-Class Performance</div>', unsafe_allow_html=True)
 
     class_perf = pd.DataFrame([
-        {"Class": "punching_hole",   "mAP50": 0.975, "Precision": 0.979, "Recall": 0.984},
-        {"Class": "scratches",       "mAP50": 0.970, "Precision": 0.885, "Recall": 0.968},
-        {"Class": "patches",         "mAP50": 0.961, "Precision": 0.929, "Recall": 0.941},
-        {"Class": "welding_line",    "mAP50": 0.932, "Precision": 0.844, "Recall": 0.921},
-        {"Class": "crescent_gap",    "mAP50": 0.927, "Precision": 0.820, "Recall": 0.979},
-        {"Class": "pitted_surface",  "mAP50": 0.898, "Precision": 0.899, "Recall": 0.790},
-        {"Class": "inclusion",       "mAP50": 0.867, "Precision": 0.824, "Recall": 0.804},
-        {"Class": "crease",          "mAP50": 0.838, "Precision": 0.858, "Recall": 0.753},
-        {"Class": "waist_folding",   "mAP50": 0.828, "Precision": 0.733, "Recall": 0.500},
+        {"Class": "punching_hole", "mAP50": 0.975, "Precision": 0.979, "Recall": 0.984},
+        {"Class": "scratches", "mAP50": 0.970, "Precision": 0.885, "Recall": 0.968},
+        {"Class": "patches", "mAP50": 0.961, "Precision": 0.929, "Recall": 0.941},
+        {"Class": "welding_line", "mAP50": 0.932, "Precision": 0.844, "Recall": 0.921},
+        {"Class": "crescent_gap", "mAP50": 0.927, "Precision": 0.820, "Recall": 0.979},
+        {"Class": "pitted_surface", "mAP50": 0.898, "Precision": 0.899, "Recall": 0.790},
+        {"Class": "inclusion", "mAP50": 0.867, "Precision": 0.824, "Recall": 0.804},
+        {"Class": "crease", "mAP50": 0.838, "Precision": 0.858, "Recall": 0.753},
+        {"Class": "waist_folding", "mAP50": 0.828, "Precision": 0.733, "Recall": 0.500},
         {"Class": "rolled-in_scale", "mAP50": 0.804, "Precision": 0.787, "Recall": 0.695},
-        {"Class": "water_spot",      "mAP50": 0.756, "Precision": 0.796, "Recall": 0.699},
-        {"Class": "crazing",         "mAP50": 0.703, "Precision": 0.671, "Recall": 0.635},
-        {"Class": "oil_spot",        "mAP50": 0.654, "Precision": 0.690, "Recall": 0.596},
-        {"Class": "silk_spot",       "mAP50": 0.645, "Precision": 0.674, "Recall": 0.559},
-        {"Class": "rolled_pit",      "mAP50": 0.161, "Precision": 0.288, "Recall": 0.223},
+        {"Class": "water_spot", "mAP50": 0.756, "Precision": 0.796, "Recall": 0.699},
+        {"Class": "crazing", "mAP50": 0.703, "Precision": 0.671, "Recall": 0.635},
+        {"Class": "oil_spot", "mAP50": 0.654, "Precision": 0.690, "Recall": 0.596},
+        {"Class": "silk_spot", "mAP50": 0.645, "Precision": 0.674, "Recall": 0.559},
+        {"Class": "rolled_pit", "mAP50": 0.161, "Precision": 0.288, "Recall": 0.223},
     ])
     st.dataframe(
         class_perf.style.background_gradient(subset=["mAP50"], cmap="RdYlGn"),
