@@ -70,10 +70,12 @@ st.markdown("""
         background-color: #161b22;
         color: #8b949e;
         border-radius: 6px 6px 0 0;
+        font-weight: 500;
     }
     .stTabs [aria-selected="true"] {
-        background-color: #e67e22;
-        color: #ffffff;
+        background-color: #00b4d8;
+        color: #000000;
+        font-weight: 700;
     }
 
     h1, h2, h3 { color: #e6edf3; }
