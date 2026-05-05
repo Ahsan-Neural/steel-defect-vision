@@ -72,7 +72,7 @@ st.markdown("""
         border-radius: 6px 6px 0 0;
     }
     .stTabs [aria-selected="true"] {
-        background-color: #1f6feb;
+        background-color: #e67e22;
         color: #ffffff;
     }
 
