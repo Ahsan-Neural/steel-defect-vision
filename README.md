@@ -1,3 +1,4 @@
+# in early stage
 # Steel Defect Vision
 
 A real-time steel surface defect detection system built with YOLOv8, trained on a merged dataset of NEU-DET and GC10-DET. The system detects 15 types of surface defects found in industrial steel manufacturing.
