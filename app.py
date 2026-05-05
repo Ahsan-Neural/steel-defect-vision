@@ -15,7 +15,10 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    .stApp { background-color: #0f1117; color: #e0e0e0; }
+    .stApp {
+        background-color: #0f1117;
+        color: #e0e0e0;
+    }
 
     [data-testid="stSidebar"] {
         background-color: #161b22;
@@ -80,46 +83,12 @@ st.markdown("""
         border-bottom: 2px solid #7dd3fc;
     }
 
-    h1, h2, h3 { color: #e6edf3; }
-    p, li, label, span, div { color: inherit; }
-
-    /* Sidebar text */
-    [data-testid="stSidebar"] * {
-        color: #dbe4ee !important;
+    h1, h2, h3 {
+        color: #e6edf3;
     }
 
-    /* Selectbox */
-    [data-testid="stSidebar"] div[data-baseweb="select"] > div {
-        background-color: #0f1117 !important;
-        color: #f8fafc !important;
-        border: 1px solid #30363d !important;
-    }
-
-    [data-testid="stSidebar"] div[data-baseweb="select"] input {
-        color: #f8fafc !important;
-    }
-
-    [data-testid="stSidebar"] div[data-baseweb="popover"] ul {
-        background-color: #161b22 !important;
-        color: #f8fafc !important;
-    }
-
-    /* Slider labels and values */
-    [data-testid="stSidebar"] .stSlider label,
-    [data-testid="stSidebar"] .stSelectbox label,
-    [data-testid="stSidebar"] .stMarkdown,
-    [data-testid="stSidebar"] p {
-        color: #dbe4ee !important;
-    }
-
-    /* Slider track and thumb */
-    [data-testid="stSidebar"] div[data-baseweb="slider"] > div > div {
-        color: #7dd3fc !important;
-    }
-
-    [data-testid="stSidebar"] div[data-baseweb="slider"] [role="slider"] {
-        background-color: #7dd3fc !important;
-        box-shadow: 0 0 0 1px #7dd3fc !important;
+    p, li {
+        color: #8b949e;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -139,13 +108,16 @@ CLASSES = [
 
 with st.sidebar:
     st.markdown("## SteelGuard")
-    st.markdown('<p style="color:#8b949e; font-size:13px;">Industrial Surface Defect Detection</p>', unsafe_allow_html=True)
+    st.markdown(
+        '<p style="color:#8b949e; font-size:13px;">Industrial Surface Defect Detection</p>',
+        unsafe_allow_html=True
+    )
     st.markdown("---")
 
     st.markdown('<div class="section-header">Inference Settings</div>', unsafe_allow_html=True)
     conf_threshold = st.slider("Confidence Threshold", 0.10, 0.95, 0.35, 0.05)
-    iou_threshold  = st.slider("IoU Threshold (NMS)", 0.10, 0.90, 0.45, 0.05)
-    imgsz          = st.selectbox("Inference Resolution", [416, 640, 832], index=1)
+    iou_threshold = st.slider("IoU Threshold (NMS)", 0.10, 0.90, 0.45, 0.05)
+    imgsz = st.selectbox("Inference Resolution", [416, 640, 832], index=1)
 
     st.markdown("---")
     st.markdown('<div class="section-header">Model Info</div>', unsafe_allow_html=True)
@@ -163,11 +135,16 @@ with st.sidebar:
     st.markdown("---")
     st.markdown('<div class="section-header">Defect Classes</div>', unsafe_allow_html=True)
     for c in CLASSES:
-        st.markdown(f'<p style="font-size:12px; color:#8b949e; margin:2px 0">— {c}</p>', unsafe_allow_html=True)
-
+        st.markdown(
+            f'<p style="font-size:12px; color:#8b949e; margin:2px 0">— {c}</p>',
+            unsafe_allow_html=True
+        )
 
 st.markdown("# Steel Surface Defect Detection")
-st.markdown('<p style="color:#8b949e;">Upload a steel surface image to detect and classify surface defects in real time.</p>', unsafe_allow_html=True)
+st.markdown(
+    '<p style="color:#8b949e;">Upload a steel surface image to detect and classify surface defects in real time.</p>',
+    unsafe_allow_html=True
+)
 st.markdown("---")
 
 tab1, tab2, tab3 = st.tabs(["Single Image Inspection", "Batch Inspection", "Model Performance"])
@@ -182,6 +159,7 @@ with tab1:
             type=["jpg", "jpeg", "png", "bmp"],
             key="single"
         )
+
         if uploaded:
             img_pil = Image.open(uploaded).convert("RGB")
             st.image(img_pil, caption="Original Image", use_container_width=True)
@@ -218,24 +196,35 @@ with tab1:
             m3.metric("Verdict", "REJECT" if n_defects > 0 else "PASS")
 
             if n_defects > 0:
-                st.markdown('<div class="verdict-reject">REJECT — Defects detected on this sheet</div>', unsafe_allow_html=True)
+                st.markdown(
+                    '<div class="verdict-reject">REJECT — Defects detected on this sheet</div>',
+                    unsafe_allow_html=True
+                )
             else:
-                st.markdown('<div class="verdict-pass">PASS — No defects detected</div>', unsafe_allow_html=True)
+                st.markdown(
+                    '<div class="verdict-pass">PASS — No defects detected</div>',
+                    unsafe_allow_html=True
+                )
 
             if n_defects > 0:
-                st.markdown('<div class="section-header" style="margin-top:20px">Defect Breakdown</div>', unsafe_allow_html=True)
+                st.markdown(
+                    '<div class="section-header" style="margin-top:20px">Defect Breakdown</div>',
+                    unsafe_allow_html=True
+                )
                 det_data = []
                 for i, box in enumerate(boxes):
                     cls_id = int(box.cls[0])
                     cls_name = CLASSES[cls_id]
                     conf_val = float(box.conf[0])
                     x1, y1, x2, y2 = map(int, box.xyxy[0])
+
                     det_data.append({
                         "No.": i + 1,
                         "Class": cls_name,
                         "Confidence": f"{conf_val:.2%}",
                         "Bounding Box": f"[{x1}, {y1}, {x2}, {y2}]"
                     })
+
                 st.dataframe(pd.DataFrame(det_data), use_container_width=True, hide_index=True)
         else:
             st.markdown(
@@ -267,6 +256,7 @@ with tab2:
                 imgsz=imgsz,
                 verbose=False
             )[0]
+
             n = len(res.boxes)
             ann = res.plot(line_width=2)[:, :, ::-1]
             verdict = "REJECT" if n > 0 else "PASS"
@@ -351,6 +341,7 @@ with tab3:
         {"Class": "silk_spot", "mAP50": 0.645, "Precision": 0.674, "Recall": 0.559},
         {"Class": "rolled_pit", "mAP50": 0.161, "Precision": 0.288, "Recall": 0.223},
     ])
+
     st.dataframe(
         class_perf.style.background_gradient(subset=["mAP50"], cmap="RdYlGn"),
         use_container_width=True,
