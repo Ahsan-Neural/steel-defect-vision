@@ -1,7 +1,5 @@
 streamlit
 ultralytics
-torch
-torchvision
 pillow
 numpy
 pandas
